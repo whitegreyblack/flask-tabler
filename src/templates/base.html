@@ -1,12 +1,10 @@
 <!doctype html>
-<html lang="en" dir="{% if page.rtl %}rtl{% else %}ltr{% endif %}">
+<html lang="en" dir="{% if page[rtl] %}rtl{% else %}ltr{% endif %}">
 <head>
+    {% include 'head.html' %}
 </head>
 <body class="{{ page[body_class] }}">
-
-<div class="page">
-	{{ content }}
-</div>
-
+    <div class="page">{% block content %}{% endblock %}
+    </div>
 </body>
 </html>

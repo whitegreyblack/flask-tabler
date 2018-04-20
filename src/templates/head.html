@@ -12,8 +12,8 @@
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 
-<link rel="icon" href="{{ site.base}}/favicon.ico" type="image/x-icon"/>
-<link rel="shortcut icon" type="image/x-icon" href="{{ site.base}}/favicon.ico" />
+<link rel="icon" href="{{ site.base }}/favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" type="image/x-icon" href="{{ site.base }}/favicon.ico" />
 
 <!-- Generated: {{ site.time }} -->
 
@@ -32,8 +32,8 @@
 <link href="{{ site.base }}/static/css/dashboard{% if page.rtl %}.rtl{% endif %}.css" rel="stylesheet" />
 <script src="{{ site.base }}/static/js/dashboard.js"></script>
 
-{% for plugin in site.theme-plugins %}
-<!-- {{ plugin[1].name }} Plugin -->
-{% if plugin[1].files contains 'css' %}<link href="{{ site.base }}/static/plugins/{{ plugin[0] }}/plugin.css" rel="stylesheet" />{% endif %}
-{% if plugin[1].files contains 'js' %}<script src="{{ site.base }}/static/plugins/{{ plugin[0] }}/plugin.js"></script>{% endif %}
+{% for plugin_name, plugin in site.theme_plugins.items() %}
+<!-- {{ plugin.name }} Plugin -->
+{% if 'css' in plugin.files %}<link href="{{ site.base }}/static/plugins/{{ plugin_name }}/plugin.css" rel="stylesheet" />{% endif %}
+{% if 'js' in plugin.files %}<script src="{{ site.base }}/static/plugins/{{ plugin_name }}/plugin.js"></script>{% endif %}
 {% endfor %}

@@ -1,29 +1,31 @@
 import yaml
 from os import walk
 from os.path import splitext
+from types import SimpleNamespace as simpledict
 from flask import Flask, jsonify, render_template
 
 data_path = './data/'
 
 app = Flask(__name__)
 app.config['base'] = '.'
-app.config['data'] = dict()
 
 def parse_yaml_data(path, filename):
     with open(path + filename) as yaml_file:
-        base_filename = splitext(filename)[0]
-        file_contents = yaml.load(yaml_file)
-        return base_filename, file_contents
+        return yaml.load(yaml_file)
 
 # config file
-config_filename, config_data = parse_yaml_data('./', 'config.yml')
-app.config['data'][config_filename] = config_data
+config_data = parse_yaml_data('./', 'config.yml')
+app.config.update(config_data)
 
 # data files
 for _, _, files in walk(data_path):
     for f in files:
-        filename, data = parse_yaml_data(data_path, f)
-        app.config['data'][filename] = data
+        filename = splitext(f)[0]
+        file_data = parse_yaml_data(data_path, f)
+        app.config[filename] = file_data
+
+print(app.config['errors'])
+# print(app.config['data'])
 
 @app.route("/")
 @app.route("/index")
@@ -67,17 +69,18 @@ def error_service_unavailable():
 def header():
     return render_template('header.html')
 
-@app.route("/numbers")
-def numbers():
-    return jsonify({'0': 4, '1': 5, '2': 6})
-
 @app.route("/base")
 def base():
     page = {
-        'title': 'base',
+        'title': 'Page 404 Flask App',
         'body_class' : '',
+        'rtl': False,
+        'error': app.config['errors']['error-404'],
     }
-    return render_template('base.html', site=app.config, page=page, content='Working?')
+    layout = {
+        'title': "",
+    }
+    return render_template('error.html', site=app.config, page=page, content='Working?', layout=layout)
 
 if __name__ == '__main__':
     app.run()
