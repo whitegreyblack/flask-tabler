@@ -9,6 +9,9 @@ data_path = './data/'
 app = Flask(__name__)
 app.config['base'] = '.'
 
+for key in app.config:
+    print(key)
+
 def parse_yaml_data(path, filename):
     with open(path + filename) as yaml_file:
         return yaml.load(yaml_file)
