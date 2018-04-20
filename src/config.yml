@@ -1,0 +1,10 @@
+theme-plugins:
+  charts-c3:
+    name: c3.js Charts
+    files: [css, js]
+  maps-google:
+    name: Google Maps
+    files: [css, js]
+  input-mask:
+    name: Input Mask
+    files: [js]
