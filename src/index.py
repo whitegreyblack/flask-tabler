@@ -8,9 +8,17 @@ data_path = './data/'
 
 app = Flask(__name__)
 app.config['base'] = '.'
+app.config['description'] = 'a responsive, flat and full featured admin template'
+app.config['layout'] = { 'title': 'tabler-flask' }
+app.config['page'] = {
+    'title': 'Homepage',
+    'body_class' : '',
+    'rtl': False,
+    'error': None,
+}
 
-for key in app.config:
-    print(key)
+# for key in app.config:
+#     print(key)
 
 def parse_yaml_data(path, filename):
     with open(path + filename) as yaml_file:
@@ -27,7 +35,9 @@ for _, _, files in walk(data_path):
         file_data = parse_yaml_data(data_path, f)
         app.config[filename] = file_data
 
-print(app.config['errors'])
+for e, v in app.config['errors'].items():
+    print(e, v)
+# print(app.config['errors'])
 # print(app.config['data'])
 
 @app.route("/")
@@ -38,52 +48,67 @@ def index():
 
 @app.route("/layout")
 def layout():
-    return render_template('layout.html', numbers=numbers())
+    return render_template('layout.html', numbers=[1,2,3])
 
 @app.route("/400")
 def error_bad_request():
-    return render_template('400.html')
+    '''Specific error request page'''
+    app.config['page']['title'] = 'Page 400'
+    app.config['page']['error'] = app.config['errors']['error-400']
+    return render_template('error.html', site=app.config)
 
 @app.route("/401")
 def error_authorization():
-    return render_template('401.html')
+    '''Specific error request page'''
+    app.config['page']['title'] = 'Page 401'
+    app.config['page']['error'] = app.config['errors']['error-401']
+    return render_template('error.html', site=app.config)
 
 @app.route("/403")
 def error_forbidden():
-    return render_template('403.html')
+    '''Specific error request page'''
+    app.config['page']['title'] = 'Page 403'
+    app.config['page']['error'] = app.config['errors']['error-403']
+    return render_template('error.html', site=app.config)
     
 @app.route("/404")
 def error_not_found():
-    return render_template('404.html')
+    '''Specific error request page'''
+    app.config['page']['title'] = 'Page 404'
+    app.config['page']['error'] = app.config['errors']['error-404']
+    return render_template('error.html', site=app.config)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    '''Page handler for unfound resources'''
+    app.config['page']['title'] = 'Page 404'
+    app.config['page']['error'] = app.config['errors']['error-404']
+    return render_template('error.html', site=app.config), 404
 
 @app.route("/410")
 def error_gone():
-    return render_template('410.html')
+    '''Specific error request page'''
+    app.config['page']['title'] = 'Page 410'
+    app.config['page']['error'] = app.config['errors']['error-410']
+    return render_template('error.html', site=app.config)
 
 @app.route('/500')
 def error_internal_server():
-    return render_template('500.html')
+    '''Specific error request page'''
+    app.config['page']['title'] = 'Page 500'
+    app.config['page']['error'] = app.config['errors']['error-500']
+    return render_template('error.html', site=app.config)
 
 @app.route('/503')
 def error_service_unavailable():
-    return render_template('503.html')
+    '''Specific error request page'''
+    app.config['page']['title'] = 'Page 503'
+    app.config['page']['error'] = app.config['errors']['error-503']
+    return render_template('error.html', site=app.config)
 
 @app.route("/demo") 
 def header():
     return render_template('header.html')
-
-@app.route("/base")
-def base():
-    page = {
-        'title': 'Page 404 Flask App',
-        'body_class' : '',
-        'rtl': False,
-        'error': app.config['errors']['error-404'],
-    }
-    layout = {
-        'title': "",
-    }
-    return render_template('error.html', site=app.config, page=page, content='Working?', layout=layout)
 
 if __name__ == '__main__':
     app.run()
